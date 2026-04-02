@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Ngocampaigns | NexusNGO{% endblock %}
+{% block page_title %}Ngocampaigns{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search ngocampaigns...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+      <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+      <option value="paused" {% if status_filter == 'paused' %}selected{% endif %}>Paused</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/ngocampaigns/create/" class="btn btn-primary">+ New NGOCampaign</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Title</th><th>Goal Amount</th><th>Raised Amount</th><th>Donors Count</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/ngocampaigns/{{ r.pk }}/edit/"><strong>{{ r.title }}</strong></a></td>
+        <td>{{ r.goal_amount|floatformat:2 }}</td>
+        <td>{{ r.raised_amount|floatformat:2 }}</td>
+        <td>{{ r.donors_count|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td class="actions">
+          <a href="/ngocampaigns/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/ngocampaigns/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No ngocampaigns found.</p>
+    <a href="/ngocampaigns/create/" class="btn btn-primary" style="margin-top:1rem">Create NGOCampaign</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
