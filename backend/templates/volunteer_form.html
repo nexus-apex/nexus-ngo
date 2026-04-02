@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Volunteer | NexusNGO{% endblock %}
+{% block page_title %}{% if editing %}Edit Volunteer{% else %}New Volunteer{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ record.email|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ record.phone|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Skills</label>
+        <input type="text" name="skills" value="{{ record.skills|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hours Contributed</label>
+        <input type="number" name="hours_contributed" value="{{ record.hours_contributed|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if record.status == 'inactive' %}selected{% endif %}>Inactive</option>
+          <option value="pending" {% if record.status == 'pending' %}selected{% endif %}>Pending</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Availability</label>
+        <select name="availability">
+          <option value="weekdays" {% if record.availability == 'weekdays' %}selected{% endif %}>Weekdays</option>
+          <option value="weekends" {% if record.availability == 'weekends' %}selected{% endif %}>Weekends</option>
+          <option value="flexible" {% if record.availability == 'flexible' %}selected{% endif %}>Flexible</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Joined Date</label>
+        <input type="date" name="joined_date" value="{{ record.joined_date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Volunteer</button>
+      <a href="/volunteers/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
